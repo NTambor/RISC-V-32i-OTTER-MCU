@@ -66,7 +66,9 @@ module OtterMemory (
     );
     
     /* ADD YOUR DESIGN HERE */
-
+    [31:0] way1 [8:0];
+    [31:0] way2 [8:0];
+    logic [8:0] LRU_bits;
     // L1 or L1s
 
     CacheLineAdapter myCacheLineAdapter (
