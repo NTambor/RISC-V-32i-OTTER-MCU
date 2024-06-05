@@ -29,7 +29,7 @@
 
 
 module CacheLineAdapter (
-    input CLK,
+     input CLK,
     input logic reset,
     input logic [31:0] address,
     input logic [31:0] write_data,
@@ -37,7 +37,8 @@ module CacheLineAdapter (
     input logic write,
     input logic [255:0] cache_line_in, // 256-bit input cache line
     output logic [255:0] cache_line_out, // 256-bit output cache line
-    output logic [31:0] read_data,
+    output logic [31:0] WBack_data,
+    output logic [31:0] Valid,
     output logic [7:0] word_enable // Byte-enable signals for write operation
     );
 
@@ -63,9 +64,9 @@ module CacheLineAdapter (
     // Read operation
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
-            read_data <= 32'b0;
+            WBack_data <= 32'b0;
         end else if (read) begin
-            read_data <= words[word_index];
+            WBack_data <= words[word_index];
         end
     end
 
@@ -86,14 +87,5 @@ module CacheLineAdapter (
         for (int i = 0; i < WORDS_PER_LINE; i++) begin
             cache_line_out[(i*WORD_SIZE) +: WORD_SIZE] = words[i];
         end
-    end
-
-    // Byte-enable signals for write operation
-    always_comb begin
-        word_enable = 8'b0;
-        if (write) begin
-            word_enable[word_index] = 1'b1;
-        end
-    end
-
+    
 endmodule
